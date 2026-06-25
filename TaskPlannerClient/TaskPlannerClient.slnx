@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="TaskPlannerClient.Tests/TaskPlannerClient.Tests.csproj" Id="131ab75e-5892-4e35-b4bd-08cdda3beac7" />
+  <Project Path="TaskPlannerClient/TaskPlannerClient.csproj" />
+</Solution>

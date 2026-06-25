@@ -1,0 +1,153 @@
+﻿<Window x:Class="TaskPlannerClient.Views.TaskEditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TaskPlannerClient.Views"
+        mc:Ignorable="d"
+        Title="Задача" Height="850" Width="600"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Window.Resources>
+        <DataTemplate x:Key="AssigneeShortTemplate">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding LastName}"/>
+                <TextBlock Text=" "/>
+                <TextBlock Text="{Binding FirstName}"/>
+            </StackPanel>
+        </DataTemplate>
+    </Window.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{StaticResource MaterialDesignScrollViewer}">
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>   <!-- 0: Основные поля -->
+                <RowDefinition Height="Auto"/>   <!-- 1: Дедлайн (заголовок) -->
+                <RowDefinition Height="Auto"/>   <!-- 2: Дедлайн (DatePicker) -->
+                <RowDefinition Height="Auto"/>   <!-- 3: Описание (заголовок) -->
+                <RowDefinition Height="Auto"/>   <!-- 4: Описание (TextBox) -->
+                <RowDefinition Height="Auto"/>   <!-- 5: Статус (заголовок) -->
+                <RowDefinition Height="Auto"/>   <!-- 6: Статус (ComboBox) -->
+                <RowDefinition Height="*"/>      <!-- 7: Заметки -->
+                <RowDefinition Height="Auto"/>   <!-- 8: Кнопки -->
+            </Grid.RowDefinitions>
+
+            <!-- Основные поля (две колонки) -->
+            <Grid Grid.Row="0" Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Левая колонка -->
+                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                    <TextBlock Text="Название" FontWeight="Bold"/>
+                    <TextBox x:Name="TitleTextBox" Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,5,0,10"/>
+
+                    <TextBlock Text="Тип задачи" FontWeight="Bold"/>
+                    <ComboBox x:Name="TypeComboBox" Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                              DisplayMemberPath="Name" SelectedValuePath="Id" Margin="0,5,0,10"/>
+
+                    <TextBlock Text="Оценка (часы)" FontWeight="Bold"/>
+                    <TextBox x:Name="EstimateTextBox" Style="{StaticResource MaterialDesignOutlinedTextBox}" Margin="0,5,0,10"/>
+                </StackPanel>
+
+                <!-- Правая колонка -->
+                <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                    <TextBlock Text="Приоритет" FontWeight="Bold"/>
+                    <ComboBox x:Name="PriorityComboBox" Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                              DisplayMemberPath="Name" SelectedValuePath="Id" Margin="0,5,0,10"/>
+
+                    <TextBlock Text="Исполнитель" FontWeight="Bold"/>
+                    <ComboBox x:Name="AssigneeComboBox" Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                              SelectedValuePath="IdEmployee" ItemTemplate="{StaticResource AssigneeShortTemplate}" Margin="0,5,0,10"/>
+
+                    <TextBlock Text="Проект" FontWeight="Bold"/>
+                    <ComboBox x:Name="ProjectComboBox" Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                              DisplayMemberPath="ProjectName" SelectedValuePath="IdProject" Margin="0,5,0,10"/>
+
+                    <TextBlock Text="Спринт" FontWeight="Bold"/>
+                    <ComboBox x:Name="SprintComboBox" Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                              DisplayMemberPath="SprintName" SelectedValuePath="IdSprint" Margin="0,5,0,10"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Дедлайн -->
+            <TextBlock Text="Дедлайн" FontWeight="Bold" Grid.Row="1" Margin="0,5,0,5"/>
+            <DatePicker x:Name="DeadlinePicker" Grid.Row="2" Margin="0,0,0,10"
+                        Style="{StaticResource MaterialDesignOutlinedDatePicker}" VerticalAlignment="Top"/>
+
+            <!-- Описание -->
+            <TextBlock Text="Описание" FontWeight="Bold" Grid.Row="3" Margin="0,5,0,5"/>
+            <TextBox x:Name="DescriptionTextBox" Grid.Row="4" Margin="0,0,0,10"
+                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                     TextWrapping="Wrap" AcceptsReturn="True" Height="70"
+                     VerticalScrollBarVisibility="Auto" SpellCheck.IsEnabled="True"/>
+
+            <!-- Статус -->
+            <TextBlock Text="Статус" FontWeight="Bold" Grid.Row="5" Margin="0,5,0,5"/>
+            <ComboBox x:Name="StatusComboBox" Grid.Row="6" Margin="0,0,0,10"
+                      Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                      DisplayMemberPath="Name" SelectedValuePath="Id"/>
+
+            <!-- Заметки -->
+            <Expander Grid.Row="7" Header="Заметки" IsExpanded="True" Margin="0,10,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBox x:Name="NoteTextBox" Width="400" Margin="5,0,0,0"
+                                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                 materialDesign:HintAssist.Hint="Текст заметки..."/>
+                        <Button x:Name="AddNoteButton" Content="Добавить" Margin="10,0,0,0"
+                                Style="{StaticResource MaterialDesignRaisedButton}" Click="AddNoteButton_Click"/>
+                    </StackPanel>
+                    <ScrollViewer Grid.Row="1" MaxHeight="150" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl x:Name="NotesItemsControl">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="{DynamicResource MaterialDesignCardBackground}"
+                                            CornerRadius="4" Padding="8" Margin="5,1,5,4">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0">
+                                                <TextBlock Text="{Binding Content}" TextWrapping="Wrap"/>
+                                                <TextBlock FontSize="11" Foreground="Gray" Margin="0,3,0,0">
+                                                    <Run Text="{Binding Author.LastName}"/>
+                                                    <Run Text=" "/>
+                                                    <Run Text="{Binding Author.FirstName}"/>
+                                                    <Run Text=" ("/>
+                                                    <Run Text="{Binding CreatedAt, StringFormat='dd.MM.yyyy HH:mm'}"/>
+                                                    <Run Text=")"/>
+                                                </TextBlock>
+                                            </StackPanel>
+                                            <Button Grid.Column="1" Content="✕" ToolTip="Удалить"
+                                                    Style="{StaticResource MaterialDesignIconButton}"
+                                                    Click="DeleteNoteButton_Click" Tag="{Binding}"
+                                                    VerticalAlignment="Top"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </Expander>
+
+            <!-- Кнопки -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="8" Margin="0,15,0,0">
+                <Button x:Name="SaveButton" Content="Сохранить" 
+                        Style="{StaticResource MaterialDesignRaisedButton}"
+                        Click="SaveButton_Click" Margin="0,0,10,0"/>
+                <Button Content="Отмена" IsCancel="True"
+                        Style="{StaticResource MaterialDesignFlatButton}"/>
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</Window>

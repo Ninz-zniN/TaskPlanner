@@ -1,0 +1,105 @@
+﻿<UserControl x:Class="TaskPlannerClient.Views.Tabs.Common.DeadlineCalendarTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:TaskPlannerClient.Converters"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TaskPlannerClient.Views.Tabs.Common"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="800" x:Name="Root">
+    <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <!-- Конвертер для подсветки дней с дедлайнами -->
+        <converters:HasDeadlineConverter x:Key="HasDeadlineConverter" />
+
+        <!-- Стиль кнопки дня с подсветкой дедлайнов -->
+        <Style x:Key="DeadlineDayButtonStyle" TargetType="CalendarDayButton" 
+               BasedOn="{StaticResource MaterialDesignCalendarDayButton}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Converter={StaticResource HasDeadlineConverter}}" Value="True">
+                    <Setter Property="Background" Value="#B39DDB"/>
+                    <!-- светло-фиолетовый -->
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <Grid Margin="15">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Календарь с русским языком -->
+        <Calendar x:Name="DeadlineCalendar" Grid.Column="0"
+                  Language="ru-RU"
+                  CalendarDayButtonStyle="{StaticResource DeadlineDayButtonStyle}"
+                  SelectedDatesChanged="DeadlineCalendar_SelectedDatesChanged"/>
+
+        <!-- Список задач на выбранный день -->
+        <Border Grid.Column="1" Margin="20,0,0,0" Background="{DynamicResource MaterialDesignCardBackground}"
+                CornerRadius="8" Padding="15">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="SelectedDateText" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                <!-- Сетка задач по 3 в ряд -->
+                <ListBox x:Name="TasksListBox" Grid.Row="1" Background="Transparent"
+                         BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                         MouseDoubleClick="TasksListBox_MouseDoubleClick">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="3"/>
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem" BasedOn="{StaticResource MaterialListBoxItem}">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="VerticalAlignment" Value="Top"/>
+                            <Setter Property="Margin" Value="2"/>
+                            <Setter Property="Padding" Value="4"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{DynamicResource MaterialDesignPaper}" CornerRadius="4" Padding="10"
+                                    MinHeight="80" HorizontalAlignment="Stretch">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <!-- Верхняя строка: название и приоритет -->
+                                    <StackPanel Grid.Row="0">
+                                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextWrapping="Wrap" 
+                                                   FontSize="14" Foreground="{DynamicResource MaterialDesignBody}"/>
+                                        <TextBlock Text="{Binding Priority.Name}" FontSize="12" 
+                                                   Foreground="{DynamicResource MaterialDesignBodyLight}" Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                    <!-- Нижняя строка: слева статус, справа исполнитель -->
+                                    <Grid Grid.Row="1" Margin="0,4,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Status.Name}" FontSize="12" 
+                                                   Foreground="{DynamicResource MaterialDesignBodyLight}"
+                                                   HorizontalAlignment="Left" Grid.Column="0"/>
+                                        <TextBlock x:Name="AssigneeTextBlock" Text="{Binding Assignee.LastName}" FontSize="12" 
+                                                   Foreground="{DynamicResource MaterialDesignBodyLight}"
+                                                   HorizontalAlignment="Right" Grid.Column="1"
+                                                   Visibility="{Binding ShowAssignee, Source={x:Reference Root}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

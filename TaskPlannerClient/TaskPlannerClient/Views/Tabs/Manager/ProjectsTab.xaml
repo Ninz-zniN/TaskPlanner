@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="TaskPlannerClient.Views.Tabs.Manager.ProjectsTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:TaskPlannerClient.Converters"
+             xmlns:local="clr-namespace:TaskPlannerClient.Views.Tabs.Manager"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             x:Name="Root">
+    <UserControl.Resources>
+        <converters:ActiveToVisibilityConverter x:Key="ActiveToVisibilityConverter"/>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Панель инструментов -->
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+            <Button x:Name="CreateButton" Content="Создать проект" 
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Click="CreateButton_Click"/>
+            <Button x:Name="RefreshButton" Content="Обновить" 
+                    Style="{StaticResource MaterialDesignFlatButton}"
+                    Margin="10,0,0,0" Click="RefreshButton_Click"/>
+        </StackPanel>
+
+        <!-- Список проектов -->
+        <DataGrid x:Name="ProjectsDataGrid" Grid.Row="1"
+                  AutoGenerateColumns="False" IsReadOnly="True"
+                  CanUserAddRows="False" SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Название" Binding="{Binding ProjectName}" Width="*"/>
+                <DataGridTextColumn Header="Статус" Binding="{Binding StatusDisplay}" Width="100"/>
+                <DataGridTextColumn Header="Менеджер" Binding="{Binding Manager.LastName}" Width="120"/>
+                <DataGridTextColumn Header="Команда" Binding="{Binding Team.TeamName}" Width="180"/>
+                <DataGridTemplateColumn Header="Действия" Width="180">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="✏️" ToolTip="Редактировать" 
+                                        Style="{StaticResource MaterialDesignIconButton}"
+                                        Click="EditButton_Click" Tag="{Binding}"/>
+                                <Button Content="✅" ToolTip="Завершить" 
+                                    Style="{StaticResource MaterialDesignIconButton}"
+                                    Click="CompleteButton_Click" Tag="{Binding}"
+                                    Visibility="{Binding Status, Converter={StaticResource ActiveToVisibilityConverter}}"/>
+                                <Button Content="🗑️" ToolTip="Удалить" 
+                                        Style="{StaticResource MaterialDesignIconButton}"
+                                        Click="DeleteButton_Click" Tag="{Binding}"
+                                        Visibility="{Binding IsAdmin, Source={x:Reference Root}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

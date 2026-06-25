@@ -1,0 +1,69 @@
+﻿<UserControl x:Class="TaskPlannerClient.Views.Tabs.Manager.SprintsTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:TaskPlannerClient.Converters"
+             xmlns:local="clr-namespace:TaskPlannerClient.Views.Tabs.Manager"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+            <Button x:Name="CreateButton" Content="Создать спринт" 
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    Click="CreateButton_Click"/>
+            <Button x:Name="RefreshButton" Content="Обновить" 
+                    Style="{StaticResource MaterialDesignFlatButton}"
+                    Margin="10,0,0,0" Click="RefreshButton_Click"/>
+        </StackPanel>
+
+        <DataGrid x:Name="SprintsDataGrid" Grid.Row="1"
+                  AutoGenerateColumns="False" IsReadOnly="True"
+                  CanUserAddRows="False" SelectionMode="Single">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Название" Binding="{Binding SprintName}" Width="*"/>
+                <DataGridTextColumn Header="Начало" Binding="{Binding StartDate, StringFormat='yyyy-MM-dd'}" Width="110"/>
+                <DataGridTextColumn Header="Конец" Binding="{Binding EndDate, StringFormat='yyyy-MM-dd'}" Width="110"/>
+                <DataGridTextColumn Header="Раб. дней" Binding="{Binding WorkDays}" Width="100"/>
+                <DataGridCheckBoxColumn Header="Активен" Binding="{Binding IsActive}" Width="90"/>
+                <DataGridTemplateColumn Header="Действия" Width="190">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="✏️" ToolTip="Редактировать" 
+                                        Style="{StaticResource MaterialDesignIconButton}"
+                                        Click="EditButton_Click" Tag="{Binding}"/>
+
+                                <!-- Кнопка "Активировать" видна только для неактивных спринтов -->
+                                <Button Content="▶️" ToolTip="Активировать" 
+                                        Style="{StaticResource MaterialDesignIconButton}"
+                                        Click="ActivateButton_Click" Tag="{Binding}"
+                                        Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"/>
+
+                                <!-- Кнопка "Закрыть" видна только для активных спринтов -->
+                                <Button Content="⏹️" ToolTip="Закрыть" 
+                                        Style="{StaticResource MaterialDesignIconButton}"
+                                        Click="CloseButton_Click" Tag="{Binding}"
+                                        Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                                <Button Content="🗑️" ToolTip="Удалить" 
+                                        Style="{StaticResource MaterialDesignIconButton}"
+                                        Click="DeleteButton_Click" Tag="{Binding}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

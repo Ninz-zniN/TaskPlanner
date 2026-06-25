@@ -1,0 +1,187 @@
+﻿<UserControl x:Class="TaskPlannerClient.Views.Tabs.Common.EisenhowerMatrixTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TaskPlannerClient.Views.Tabs.Common"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="900">
+    <UserControl.Resources>
+        <!-- Стиль заголовка квадранта (Border) -->
+        <Style x:Key="QuadrantHeaderBorderStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="6,6,0,0"/>
+            <Setter Property="Padding" Value="10,8"/>
+        </Style>
+        <!-- Стиль заголовка квадранта (Border) -->
+        <Style x:Key="OutLineBorderStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="0,0,6,6"/>
+            <Setter Property="BorderThickness" Value="0.8"/>
+        </Style>
+        <!-- Стиль контейнера квадранта (Border) -->
+        <Style x:Key="QuadrantContainerBorderStyle" TargetType="Border">
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="2"/>
+            <Setter Property="Background" Value="{DynamicResource MaterialDesignCardBackground}"/>
+            <!-- тень -->
+            <Setter Property="Effect" Value="{DynamicResource MaterialDesignShadowDepth1}"/>
+        </Style>
+        <!-- Стиль текста заголовка -->
+        <Style x:Key="QuadrantHeaderTextStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <!-- Стиль для всех четырёх списков квадрантов -->
+        <Style x:Key="MatrixQuadrantListBoxStyle" TargetType="ListBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="Margin" Value="0,2,0,0"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="2"/>
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource MaterialListBoxItem}">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <!-- VerticalAlignment НЕ задаём (остаётся Stretch по умолчанию) -->
+                        <Setter Property="Margin" Value="0"/>
+                        <Setter Property="Padding" Value="4"/>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <!-- Карточка с отступом, чтобы обводка была видна -->
+                        <Border Background="{DynamicResource MaterialDesignPaper}" 
+                    CornerRadius="4" Padding="8">
+                            <StackPanel>
+                                <!-- Название с переносом (TextWrapping уже включён) -->
+                                <TextBlock Text="{Binding Title}" 
+                               FontWeight="SemiBold" 
+                               TextWrapping="Wrap" 
+                               FontSize="14"
+                               Foreground="{DynamicResource MaterialDesignBody}"/>
+
+                                <!-- Приоритет (отдельной строкой) -->
+                                <TextBlock Text="{Binding Priority.Name}" 
+                               FontSize="12" 
+                               Margin="0,6,0,0"
+                               Foreground="{DynamicResource MaterialDesignBodyLight}"/>
+
+                                <!-- Дедлайн (отдельной строкой) -->
+                                <TextBlock Text="{Binding Deadline, StringFormat='dd.MM.yyyy'}" 
+                               FontSize="12" 
+                               Margin="0,2,0,0"
+                               Foreground="{DynamicResource MaterialDesignBodyLight}"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Важные и Срочные -->
+        <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource QuadrantContainerBorderStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Border Background="#E57373" Style="{StaticResource QuadrantHeaderBorderStyle}">
+                    <TextBlock Text="Важные и Срочные" Style="{StaticResource QuadrantHeaderTextStyle}"/>
+                </Border>
+                <Border BorderBrush="#E57373" Style="{StaticResource OutLineBorderStyle}" Grid.Row="1">
+                    <ListBox x:Name="ImportantUrgentList" Grid.Row="1"
+                         Style="{StaticResource MatrixQuadrantListBoxStyle}"
+                         MouseDoubleClick="TaskList_MouseDoubleClick"/>
+                </Border>
+                <!--<ListBox x:Name="ImportantUrgentList" Grid.Row="1"
+                     Style="{StaticResource MatrixQuadrantListBoxStyle}"
+                     MouseDoubleClick="TaskList_MouseDoubleClick"/>-->
+            </Grid>
+        </Border>
+
+        <!-- Важные, Не срочные -->
+        <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource QuadrantContainerBorderStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Border Background="#FFB74D" Style="{StaticResource QuadrantHeaderBorderStyle}">
+                    <TextBlock Text="Важные, Не срочные" Style="{StaticResource QuadrantHeaderTextStyle}"/>
+                </Border>
+                <Border BorderBrush="#FFB74D" Style="{StaticResource OutLineBorderStyle}" Grid.Row="1">
+                    <ListBox x:Name="ImportantNotUrgentList" Grid.Row="1"
+                         Style="{StaticResource MatrixQuadrantListBoxStyle}"
+                         MouseDoubleClick="TaskList_MouseDoubleClick"/>
+                </Border>
+                <!--<ListBox x:Name="ImportantNotUrgentList" Grid.Row="1"
+                         Style="{StaticResource MatrixQuadrantListBoxStyle}"
+                         MouseDoubleClick="TaskList_MouseDoubleClick"/>-->
+            </Grid>
+        </Border>
+
+        <!-- Не важные, Срочные -->
+        <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource QuadrantContainerBorderStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Border Background="#64B5F6" Style="{StaticResource QuadrantHeaderBorderStyle}">
+                    <TextBlock Text="Не важные, Срочные" Style="{StaticResource QuadrantHeaderTextStyle}"/>
+                </Border>
+                <Border BorderBrush="#64B5F6" Style="{StaticResource OutLineBorderStyle}" Grid.Row="1">
+                    <ListBox x:Name="NotImportantUrgentList" Grid.Row="1"
+                         Style="{StaticResource MatrixQuadrantListBoxStyle}"
+                         MouseDoubleClick="TaskList_MouseDoubleClick"/>
+                </Border>
+                <!--<ListBox x:Name="NotImportantUrgentList" Grid.Row="1"
+                         Style="{StaticResource MatrixQuadrantListBoxStyle}"
+                         MouseDoubleClick="TaskList_MouseDoubleClick"/>-->
+            </Grid>
+        </Border>
+
+        <!-- Не важные, Не срочные -->
+        <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource QuadrantContainerBorderStyle}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Border Background="#81C784" Style="{StaticResource QuadrantHeaderBorderStyle}">
+                    <TextBlock Text="Не важные, Не срочные" Style="{StaticResource QuadrantHeaderTextStyle}"/>
+                </Border>
+                <Border BorderBrush="#81C784" Style="{StaticResource OutLineBorderStyle}" Grid.Row="1">
+                    <ListBox x:Name="NotImportantNotUrgentList" Grid.Row="1"
+                         Style="{StaticResource MatrixQuadrantListBoxStyle}"
+                         MouseDoubleClick="TaskList_MouseDoubleClick"/>
+                </Border>
+                <!--<ListBox x:Name="NotImportantNotUrgentList" Grid.Row="1"
+                         Style="{StaticResource MatrixQuadrantListBoxStyle}"
+                         MouseDoubleClick="TaskList_MouseDoubleClick"/>-->
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

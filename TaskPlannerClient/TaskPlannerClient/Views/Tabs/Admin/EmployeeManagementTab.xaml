@@ -1,0 +1,55 @@
+﻿<UserControl x:Class="TaskPlannerClient.Views.Tabs.Admin.EmployeeManagementTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TaskPlannerClient.Views.Tabs.Admin"
+             xmlns:converters="clr-namespace:TaskPlannerClient.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="1000">
+    <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+            <Button x:Name="AddButton" Content="Добавить сотрудника" Style="{StaticResource MaterialDesignRaisedButton}" Click="AddButton_Click"/>
+            <Button x:Name="RefreshButton" Content="Обновить" Style="{StaticResource MaterialDesignFlatButton}" Margin="10,0,0,0" Click="RefreshButton_Click"/>
+        </StackPanel>
+
+        <DataGrid x:Name="EmployeesGrid" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName}" Width="*"/>
+                <DataGridTextColumn Header="Имя" Binding="{Binding FirstName}" Width="*"/>
+                <DataGridTextColumn Header="Должность" Binding="{Binding Position}" Width="*"/>
+                <DataGridTextColumn Header="Грейд" Binding="{Binding Grade}" Width="80"/>
+                <DataGridTextColumn Header="Команда" Binding="{Binding Team.TeamName}" Width="*"/>
+                <DataGridTextColumn Header="Часов в день" Binding="{Binding HoursPerDay}" Width="100"/>
+                <DataGridCheckBoxColumn Header="Уволен" Binding="{Binding IsDismissed}" Width="70"/>
+                <DataGridTemplateColumn Header="Действия" Width="200">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="✏️" ToolTip="Редактировать" Style="{StaticResource MaterialDesignIconButton}"
+                                        Click="EditButton_Click" Tag="{Binding}"/>
+                                <!-- Кнопка увольнения (видна, если сотрудник активен) -->
+                                <Button Content="🚫" ToolTip="Уволить" Style="{StaticResource MaterialDesignIconButton}"
+                                    Click="DismissButton_Click" Tag="{Binding}"
+                                    Visibility="{Binding IsDismissed, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"/>
+
+                                <!-- Кнопка восстановления (видна, если сотрудник уволен) -->
+                                <Button Content="🔄" ToolTip="Восстановить" Style="{StaticResource MaterialDesignIconButton}"
+                                    Click="RestoreButton_Click" Tag="{Binding}"
+                                    Visibility="{Binding IsDismissed, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

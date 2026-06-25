@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="TaskPlannerClient.Views.Tabs.Worker.AllTaskTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:local="clr-namespace:TaskPlannerClient.Views.Tabs.Worker"
+             xmlns:converters="clr-namespace:TaskPlannerClient.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    </UserControl.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBox x:Name="SearchTextBox" 
+             materialDesign:HintAssist.Hint="Поиск по названию или ID"
+             Style="{StaticResource MaterialDesignOutlinedTextBox}"
+             Margin="0,0,0,5"
+             TextChanged="SearchTextBox_TextChanged"/>
+        
+        <DataGrid x:Name="TasksDataGrid" 
+                  AutoGenerateColumns="False" 
+                  IsReadOnly="True"
+                  CanUserAddRows="False"
+                  Grid.Row="1">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Название" Binding="{Binding Title}" Width="*"/>
+                <DataGridTextColumn Header="Статус" Binding="{Binding Status.Name}" Width="100"/>
+                <DataGridTextColumn Header="Приоритет" Binding="{Binding Priority.Name}" Width="100"/>
+                <DataGridTextColumn Header="Исполнитель" Width="120">
+                    <DataGridTextColumn.Binding>
+                        <Binding Path="Assignee.LastName" TargetNullValue="—"/>
+                    </DataGridTextColumn.Binding>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Дедлайн" Binding="{Binding Deadline, StringFormat='yyyy-MM-dd'}" Width="110"/>
+                <DataGridTemplateColumn Header="Действия" Width="130">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Детали" Click="DetailsButton_Click" Tag="{Binding}"
+                    Style="{StaticResource MaterialDesignFlatButton}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

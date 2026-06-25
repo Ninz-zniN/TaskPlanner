@@ -1,0 +1,32 @@
+﻿<UserControl x:Class="TaskPlannerClient.Views.Tabs.Manager.ProjectProgressReportControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:TaskPlannerClient.Views.Tabs.Manager"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="800">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Margin="0,10,0,5">
+            <Button x:Name="OpenDonutButton" Content="Диаграмма статусов" 
+            Style="{StaticResource MaterialDesignOutlinedButton}"
+            Click="OpenDonutButton_Click"/>
+        </StackPanel>
+        <DataGrid x:Name="ProgressGrid" AutoGenerateColumns="False" IsReadOnly="True" Grid.Row="1">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Проект" Binding="{Binding ProjectName}" Width="*"/>
+                <DataGridTextColumn Header="План (ч)" Binding="{Binding PlannedHours}" Width="80"/>
+                <DataGridTextColumn Header="Факт (ч)" Binding="{Binding ActualHours}" Width="80"/>
+                <DataGridTextColumn Header="Освоено %" Binding="{Binding CompletionPercentWeighted, StringFormat='{}{0:F1}%'}" Width="100"/>
+                <DataGridTextColumn Header="Задач" Binding="{Binding TotalTasks}" Width="60"/>
+                <DataGridTextColumn Header="Готово" Binding="{Binding CompletedTasks}" Width="60"/>
+                <DataGridTextColumn Header="Выполнено задач" Binding="{Binding CompletionPercentTasks, StringFormat='{}{0:F1}%'}" Width="90"/>
+                <DataGridTextColumn Header="Завершенный объем (часов)" Binding="{Binding CompletionPercentHours, StringFormat='{}{0:F1}%'}" Width="90"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>
