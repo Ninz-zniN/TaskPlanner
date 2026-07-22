@@ -57,6 +57,8 @@
 TaskPlanner/
 ├── client/ # WPF-приложение (TaskPlannerClient)
 ├── server/ # Node.js сервер (Express API)
+│ ├── Dockerfile
+│ └── .dockerignore
 ├── database/ # SQL-скрипты
 │ ├── full_init.sql # полная инициализация БД (структура + демо-данные)
 │ └── schema.sql # только структура (для ознакомления)
@@ -76,15 +78,18 @@ TaskPlanner/
 3. В корне проекта выполните:
    ```bash
    docker compose up -d
+   ```
 4. Сервер будет доступен на http://localhost:3001.
 
 5. Клиент (WPF) откройте в Visual Studio, убедитесь, что URL API указывает на http://localhost:3001/api, и запустите (F5).
 
 ### Без Docker (ручная установка)
 1. База данных (PostgreSQL)
-Убедитесь, что PostgreSQL запущен (порт 5432). Создайте пустую базу taskplanner.
+Убедитесь, что PostgreSQL запущен (порт 5433). Создайте пустую базу taskplanner.
 Выполните скрипт инициализации:
-psql -U postgres -d taskplanner -f database/full_init.sql
+   ```bash
+   psql -U postgres -d taskplanner -f database/full_init.sql
+   ```
 После этого база будет наполнена демо-данными.
 
 2. Сервер (Node.js)
